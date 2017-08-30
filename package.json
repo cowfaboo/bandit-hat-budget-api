@@ -15,5 +15,9 @@
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.heroku.com/boiling-bastion-50971"
   }
 }
