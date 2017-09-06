@@ -1,6 +1,11 @@
-const budgetRoutes = require('./budget_routes');
+//const budgetRoutes = require('./budget_routes');
+const categoryRoutes = require('./category_routes');
+const userRoutes = require('./user_routes');
+const expenseRoutes = require('./expense_routes');
 
-module.exports = function(app, db) {
-  budgetRoutes(app, db);
-  // Other route groups could go here, in the future
+module.exports = function(app) {
+  categoryRoutes(app);
+  expenseRoutes(app);
+  userRoutes(app);
+  //groupRoutes(app, db);
 };
