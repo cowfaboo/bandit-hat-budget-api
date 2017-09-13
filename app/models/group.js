@@ -41,4 +41,10 @@ groupSchema.methods.verifyPassword = function(password, callback) {
     });
 };
 
+groupSchema.methods.toJSON = function() {
+    var obj = this.toObject()
+    delete obj.password
+    return obj
+  }
+
 module.exports = mongoose.model('Group', groupSchema);

@@ -22,6 +22,11 @@ module.exports = function(app) {
         });
     });
 
+    // GET signin
+    router.get('/signin', auth.isAuthenticated, (req, res) => {
+        res.send("Sign in successful");
+    });
+
     // POST
 	router.post('/', (req, res) => {
 
