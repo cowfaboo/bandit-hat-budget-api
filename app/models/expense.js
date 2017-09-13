@@ -5,7 +5,8 @@ var expenseSchema = new mongoose.Schema({
     date: Date,
     amount: Number,
     category: { type: mongoose.Schema.ObjectId, ref: 'Category' },
-    user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true }
+    user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
+    group: { type: mongoose.Schema.ObjectId, ref: 'Group', required: true }
 }, {
     timestamps: true
 });

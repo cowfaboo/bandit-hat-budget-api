@@ -3,16 +3,18 @@ var router = express.Router();
 var ObjectID = require('mongodb').ObjectID;
 var Category = require('../models/category');
 var mongoose = require('mongoose');
+var auth = require('./auth');
 
 
 module.exports = function(app) {
 
     app.use('/category', router);
-
     // GET
-    router.get('/', (req, res) => {
+    router.get('/', auth.isAuthenticated, (req, res) => {
 
-        Category.find((err, categories) => {
+        var groupID = req.user._id;
+
+        Category.find({group: groupID}, (err, categories) => {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -22,9 +24,11 @@ module.exports = function(app) {
     });
 
     // GET id
-    router.get('/:id', (req, res) => {
+    router.get('/:id', auth.isAuthenticated, (req, res) => {
 
-        Category.findById(req.params.id, (err, category) => {
+        var groupID = req.user._id;
+
+        Category.find({group: groupID, _id: req.params.id}, (err, category) => {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -37,13 +41,14 @@ module.exports = function(app) {
     });
 
     // POST
-	router.post('/', (req, res) => {
+	router.post('/', auth.isAuthenticated, (req, res) => {
 
         var category = new Category();
         category.name = req.body.name;
         category.description = req.body.description;
         category.monthly_budget = req.body.monthly_budget;
         category.color = req.body.color;
+        category.group = req.user._id;
         
         category.save(function(err) {
             if (err) {
@@ -55,8 +60,11 @@ module.exports = function(app) {
     });
 
     // PATCH id
-    router.patch('/:id', (req, res) => {
-        Category.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, (err, category) => {
+    router.patch('/:id', auth.isAuthenticated, (req, res) => {
+        
+        var groupID = req.user._id;
+
+        Category.findOneAndUpdate({group: groupID, _id: req.params.id}, {$set: req.body}, {new: true}, (err, category) => {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -69,16 +77,18 @@ module.exports = function(app) {
     });
 
     // DELETE id
-    router.delete('/:id', (req, res) => {
-            Category.findOne( {_id: req.params.id}, (err, category) => {
+    router.delete('/:id', auth.isAuthenticated, (req, res) => {
+        
+        var groupID = req.user._id;
+
+        Category.findOneAndRemove({group: groupID, _id: req.params.id}, (err, category) => {
             if (err) {
                 res.status(500).send(err);
             } else {
                 if (!category) {
                     res.status(404);
-                } else {
-                    category.remove();
                 }
+
                 res.json(category);
             }
         });

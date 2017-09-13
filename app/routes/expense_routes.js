@@ -4,7 +4,8 @@ var Expense = require('../models/expense');
 var Category = require('../models/category');
 var User = require ('../models/user');
 var mongoose = require('mongoose');
-var ObjectId = require('mongoose').Types.ObjectId; 
+var ObjectID = require('mongodb').ObjectID; 
+var auth = require('./auth');
 
 
 module.exports = function(app) {
@@ -12,8 +13,9 @@ module.exports = function(app) {
     app.use('/expense', router);
 
     // GET
-    router.get('/', (req, res) => {
+    router.get('/', auth.isAuthenticated, (req, res) => {
 
+        var groupID = req.user._id;
         var categoryID = req.query.category_id;
         var userID = req.query.user_id;
         var startDate = req.query.start_date;
@@ -21,14 +23,14 @@ module.exports = function(app) {
         var page = req.query.page;
         var perPage = req.query.per_page;
 
-        var query = Expense.find();
+        var query = Expense.find({group: groupID});
 
         if (categoryID) {
-            query = query.where('category').equals(ObjectId(categoryID));
+            query = query.where('category').equals(ObjectID(categoryID));
         }
 
         if (userID) {
-            query = query.where('user').equals(ObjectId(userID));
+            query = query.where('user').equals(ObjectID(userID));
         }
 
         if (startDate && endDate) {
@@ -54,15 +56,16 @@ module.exports = function(app) {
     });
 
     // GET amount
-    router.get('/amount', (req, res) => {
+    router.get('/amount', auth.isAuthenticated, (req, res) => {
         
+        var groupID = req.user._id;
         var categoryID = req.query.category_id;
         var userID = req.query.user_id;
         var startDate = req.query.start_date;
         var endDate = req.query.end_date;
 
         var aggregateMatch = { $match: {
-            
+            group: groupID
         } };
 
         var aggregateGroup = { $group: {
@@ -109,7 +112,7 @@ module.exports = function(app) {
             aggregateGroup.$group.category_id = { '$first': '$category' };
             aggregateGroup.$group._id.category_id = '$category';
             if (userID) {
-                aggregateMatch.$match.user = ObjectId(userID);
+                aggregateMatch.$match.user = ObjectID(userID);
                 aggregateFieldAddition.$addFields.user_id = userID;
             }
 
@@ -126,7 +129,7 @@ module.exports = function(app) {
             aggregateGroup.$group.user_id = { '$first': '$user' };
             aggregateGroup.$group._id.user_id = '$user';
             if (categoryID) {
-                aggregateMatch.$match.category = ObjectId(categoryID);
+                aggregateMatch.$match.category = ObjectID(categoryID);
                 aggregateFieldAddition.$addFields.category_id = categoryID;
             }
 
@@ -141,12 +144,12 @@ module.exports = function(app) {
         } else {
 
             if (categoryID) {
-                aggregateMatch.$match.category = ObjectId(categoryID);
+                aggregateMatch.$match.category = ObjectID(categoryID);
                 aggregateFieldAddition.$addFields.category_id = categoryID;
             }
 
             if (userID) {
-                aggregateMatch.$match.user = ObjectId(userID);
+                aggregateMatch.$match.user = ObjectID(userID);
                 aggregateFieldAddition.$addFields.user_id = userID;
             }
 
@@ -161,9 +164,11 @@ module.exports = function(app) {
     });
 
     // GET id
-    router.get('/:id', (req, res) => {
+    router.get('/:id', auth.isAuthenticated, (req, res) => {
 
-        Expense.findById(req.params.id, (err, expense) => {
+        var groupID = req.user._id;
+
+        Expense.findOne({group: groupID, _id: req.params.id}, (err, expense) => {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -176,13 +181,14 @@ module.exports = function(app) {
     });
 
     // POST
-	router.post('/', (req, res) => {
+	router.post('/', auth.isAuthenticated, (req, res) => {
 
         var expense = new Expense();
         expense.name = req.body.name;
         expense.amount = req.body.amount;
-        expense.user = ObjectId(req.body.user_id);
-        expense.category = ObjectId(req.body.category_id);
+        expense.user = ObjectID(req.body.user_id);
+        expense.category = ObjectID(req.body.category_id);
+        expense.group = req.user._id;
         expense.date = new Date(req.body.date);
         
         expense.save(function(err) {
@@ -195,8 +201,11 @@ module.exports = function(app) {
     });
 
     // PATCH id
-    router.patch('/:id', (req, res) => {
-        Expense.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, (err, expense) => {
+    router.patch('/:id', auth.isAuthenticated, (req, res) => {
+        
+        var groupID = req.user._id;
+
+        Expense.findOneAndUpdate({group: groupID, _id: req.params.id}, {$set: req.body}, {new: true}, (err, expense) => {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -209,8 +218,11 @@ module.exports = function(app) {
     });
 
     // DELETE id
-    router.delete('/:id', (req, res) => {
-        Expense.findByIdAndRemove(req.params.id, (err, expense) => {
+    router.delete('/:id', auth.isAuthenticated, (req, res) => {
+        
+        var groupID = req.user._id;
+
+        Expense.findOneAndRemove({group: groupID, _id: req.params.id}, (err, expense) => {
             if (err) {
                 res.status(500).send(err);
             } else {

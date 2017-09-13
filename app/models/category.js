@@ -5,7 +5,8 @@ var categorySchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     description: String,
     monthlyBudget: { type: Number, min: 0 },
-    color: { type: String, required: true }
+    color: { type: String, required: true },
+    group: { type: mongoose.Schema.ObjectId, ref: 'Group', required: true }
 }, {
     timestamps: true
 });
