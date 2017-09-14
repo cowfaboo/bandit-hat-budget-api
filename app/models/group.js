@@ -4,6 +4,8 @@ var bcrypt = require('bcrypt-nodejs');
 var groupSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     password: { type: String, required: true }
+}, {
+    timestamps: true
 });
 
 groupSchema.pre('save', function(callback) {

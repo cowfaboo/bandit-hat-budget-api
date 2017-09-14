@@ -24,7 +24,17 @@ module.exports = function(app) {
 
     // GET signin
     router.get('/signin', auth.isAuthenticated, (req, res) => {
-        res.send({response: 'Sign in successful'});
+        
+        Group.findById(req.user._id, (err, group) => {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                if (!group) {
+                    res.status(404);
+                }
+                res.json(group);
+            }
+        });
     });
 
     // POST
