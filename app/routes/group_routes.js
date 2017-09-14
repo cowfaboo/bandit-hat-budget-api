@@ -24,7 +24,7 @@ module.exports = function(app) {
 
     // GET signin
     router.get('/signin', auth.isAuthenticated, (req, res) => {
-        res.send("Sign in successful");
+        res.send({response: 'Sign in successful'});
     });
 
     // POST
