@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Expense = require('./expense');
 
 var categorySchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     description: String,
     monthlyBudget: { type: Number, min: 0 },
     color: { type: String, required: true },

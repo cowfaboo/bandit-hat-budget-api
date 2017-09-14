@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     group: { type: mongoose.Schema.ObjectId, ref: 'Group', required: true }
 }, {
     timestamps: true
