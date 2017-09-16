@@ -5,7 +5,7 @@ var Group = require('../models/group');
 
 passport.use(new BasicStrategy(function(name, password, callback) {
         
-    Group.findOne({ name: name }, function (err, group) {
+    Group.findOne({ lowercaseName: name.toLowerCase() }, function (err, group) {
         if (err) { 
             return callback(err); 
         }

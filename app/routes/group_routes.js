@@ -42,11 +42,15 @@ module.exports = function(app) {
 
         var group = new Group({
             name: req.body.name,
+            lowercaseName: req.body.name.toLowerCase(),
             password: req.body.password
         });
         
         group.save(function(err) {
             if (err) {
+                if (err.code == 11000) {
+                    err.customErrorMessage = "That household name already exists. Try something else!"
+                }
                 res.status(500).send(err);
             } else {
                 res.json(group);
