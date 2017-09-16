@@ -49,7 +49,7 @@ module.exports = function(app) {
         group.save(function(err) {
             if (err) {
                 if (err.code == 11000) {
-                    err.customErrorMessage = "That household name already exists. Try something else!"
+                    err['customErrorMessage'] = 'That household name already exists. Try something else!';
                 }
                 res.status(500).send(err);
             } else {
