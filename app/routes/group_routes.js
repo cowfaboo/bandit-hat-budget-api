@@ -48,10 +48,11 @@ module.exports = function(app) {
         
         group.save(function(err) {
             if (err) {
-                if (err.code == 11000) {
-                    err['customErrorMessage'] = 'That household name already exists. Try something else!';
+                if (err.code === 11000) {
+                    res.status(500).send( {customErrorMessage: 'That household name already exists. Try something else!'} )
+                } else {
+                    res.status(500).send(err);
                 }
-                res.status(500).send(err);
             } else {
                 res.json(group);
             }
