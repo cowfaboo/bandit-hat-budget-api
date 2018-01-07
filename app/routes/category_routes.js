@@ -46,7 +46,7 @@ module.exports = function(app) {
         var category = new Category();
         category.name = req.body.name;
         category.description = req.body.description;
-        category.monthly_budget = req.body.monthly_budget;
+        category.monthlyBudget = req.body.monthlyBudget;
         category.color = req.body.color;
         category.group = req.user._id;
         
