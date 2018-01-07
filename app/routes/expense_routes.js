@@ -88,7 +88,7 @@ module.exports = function(app) {
         } };
 
         var aggregateArray = [aggregateMatch, aggregateGroup, aggregateProjection, aggregateFieldAddition];
-        if (startDate & endDate) {
+        if (startDate && endDate) {
             aggregateMatch.$match.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
         }
 
