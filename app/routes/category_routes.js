@@ -78,7 +78,7 @@ module.exports = function(app) {
 
     // DELETE id
     router.delete('/:id', auth.isAuthenticated, (req, res) => {
-        
+        console.log('deleting category')
         var groupID = req.user._id;
 
         Category.findOneAndRemove({group: groupID, _id: req.params.id}, (err, category) => {
@@ -88,7 +88,7 @@ module.exports = function(app) {
                 if (!category) {
                     res.status(404);
                 }
-
+                console.log('category deleted')
                 res.json(category);
             }
         });
