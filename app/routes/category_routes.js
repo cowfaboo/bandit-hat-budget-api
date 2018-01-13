@@ -81,15 +81,17 @@ module.exports = function(app) {
         console.log('deleting category')
         var groupID = req.user._id;
 
-        Category.findOneAndRemove({group: groupID, _id: req.params.id}, (err, category) => {
+        Category.findOne({group: groupID, _id: req.params.id}, (err, category) => {
+
             if (err) {
                 res.status(500).send(err);
             } else {
                 if (!category) {
                     res.status(404);
                 }
+                category.remove();
                 console.log('category deleted')
-                res.json(category);
+                res.json(category)
             }
         });
     });
