@@ -13,6 +13,7 @@ var categorySchema = new mongoose.Schema({
 
 categorySchema.pre('remove', function (next) {
   
+    console.log('inside middleware')
     var query = Expense.find().where('category').equals(mongoose.Types.ObjectId(this._id));
     query.exec( function (err, expenses) {
         if (!err) {
