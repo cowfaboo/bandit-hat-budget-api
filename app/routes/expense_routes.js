@@ -208,11 +208,11 @@ module.exports = function(app) {
         var groupID = req.user._id;
 
         var setDictionary = {};
-        if (req.name) {
+        if (req.body.name) {
             setDictionary.name = req.name;
         }
 
-        if (req.amount) {
+        if (req.body.amount) {
             setDictionary.amount = req.amount;
         }
 
