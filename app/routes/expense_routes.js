@@ -204,11 +204,33 @@ module.exports = function(app) {
     router.patch('/:id', auth.isAuthenticated, (req, res) => {
         
         console.log('inside patch')
-        console.log(req)
 
         var groupID = req.user._id;
 
-        Expense.findOneAndUpdate({group: groupID, _id: req.params.id}, {$set: req.body}, {new: true}, (err, expense) => {
+        var setDictionary = {};
+        if (req.name) {
+            setDictionary.name = req.name;
+        }
+
+        if (req.amount) {
+            setDictionary.amount = req.amount;
+        }
+
+        if (req.body.user_id) {
+            setDictionary.user = ObjectID(req.body.user_id)
+        }
+
+        if (req.body.category_id) {
+            setDictionary.category_id = ObjectID(req.body.category_id)
+        }
+
+        if (req.body.date) {
+            setDictionary.date = new Date(req.body.date)
+        }
+
+        console.log(setDictionary)
+
+        Expense.findOneAndUpdate({group: groupID, _id: req.params.id}, {$set: setDictionary}, {new: true}, (err, expense) => {
             if (err) {
                 res.status(500).send(err);
             } else {
