@@ -221,7 +221,7 @@ module.exports = function(app) {
         }
 
         if (req.body.category_id) {
-            setDictionary.category_id = ObjectID(req.body.category_id)
+            setDictionary.category = ObjectID(req.body.category_id)
         }
 
         if (req.body.date) {
