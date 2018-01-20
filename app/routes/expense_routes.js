@@ -203,6 +203,9 @@ module.exports = function(app) {
     // PATCH id
     router.patch('/:id', auth.isAuthenticated, (req, res) => {
         
+        console.log('inside patch')
+        console.log(req)
+
         var groupID = req.user._id;
 
         Expense.findOneAndUpdate({group: groupID, _id: req.params.id}, {$set: req.body}, {new: true}, (err, expense) => {
