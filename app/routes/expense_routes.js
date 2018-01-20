@@ -34,7 +34,7 @@ module.exports = function(app) {
         }
 
         if (startDate && endDate) {
-            query = query.where('createdAt').gte(new Date(startDate)).lte(new Date(endDate));
+            query = query.where('date').gte(new Date(startDate)).lte(new Date(endDate));
         }
 
         if (page && perPage) {
