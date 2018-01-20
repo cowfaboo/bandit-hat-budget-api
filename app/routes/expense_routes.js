@@ -209,11 +209,11 @@ module.exports = function(app) {
 
         var setDictionary = {};
         if (req.body.name) {
-            setDictionary.name = req.name;
+            setDictionary.name = req.body.name;
         }
 
         if (req.body.amount) {
-            setDictionary.amount = req.amount;
+            setDictionary.amount = req.body.amount;
         }
 
         if (req.body.user_id) {
