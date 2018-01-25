@@ -22,6 +22,7 @@ module.exports = function(app) {
         var endDate = req.query.end_date;
         var page = req.query.page;
         var perPage = req.query.per_page;
+        var updatedSince = req.query.updated_since;
 
         var query = Expense.find({group: groupID});
 
@@ -35,6 +36,10 @@ module.exports = function(app) {
 
         if (startDate && endDate) {
             query = query.where('date').gte(new Date(startDate)).lte(new Date(endDate));
+        }
+
+        if (updatedSince) {
+            query = query.where('updatedAt').gte(new Date(updatedSince));
         }
 
         if (page && perPage) {
